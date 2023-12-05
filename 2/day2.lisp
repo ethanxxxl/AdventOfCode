@@ -52,12 +52,7 @@
 (defun game-power (cubes)
   (reduce #'* (min-cubes cubes)))
 
-(defun add-up-powers (&optional (filename "./day2input.txt"))
-  (with-open-file (f filename)
-    (loop as game = (read-line f nil)
-	  while game
-	  summing (game-power (parse-game game)))))
-
+;; PART 1 SOLUTION
 (defun add-up-valid (&optional (filename "./day2input.txt"))
   (with-open-file (f filename)
     (loop as game = (read-line f nil)
@@ -65,3 +60,9 @@
 	    summing (or (validate-game game) 0) into c do
 	  (format t "~&~%~S ~S:  ~S"  c (validate-game game) game))))
 
+;; PART 2 SOLUTION
+(defun add-up-powers (&optional (filename "./day2input.txt"))
+  (with-open-file (f filename)
+    (loop as game = (read-line f nil)
+	  while game
+	  summing (game-power (parse-game game)))))

@@ -75,6 +75,7 @@ returned. otherwise, zero is returned."
 	while g
 	summing (gear-ratio g curr prev next)))
 
+;; PART 1 / 2 SOLUTION
 (defun sum-file (&key (file "day3input.txt") part2)
   "sums contents of `file'. will run the algorithm for part 2 if `part2' is t."
   (with-open-file (f file)

@@ -30,6 +30,7 @@
 		   :key #'second)
 	   #'< :key #'second)))
 
+;; PART 2 SOLUTION
 (defun read-numbers (filename)
   (with-open-file (s filename)
     (do ((line (read-line s) (read-line s nil))
@@ -37,9 +38,3 @@
 	 (accum 0 (+ accum (get-number2 line))))
 	((not line) accum)
       (format t "~&~S => ~A | ~A" line (get-number2 line) accum))))
-
-(defparameter *test-string*
-  "1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet")
