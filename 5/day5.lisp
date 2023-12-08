@@ -101,5 +101,61 @@ THE MAPS ARE IN REVERSED ORDER FROM THE FILE"
 		       do (setf min (min min 
 					 (location<-seed n maps))))))))
 
-(defun quick-min (start len map)
-  "clever algorithm to find the minimum ")
+
+(defun ranges<-seed-range (start len map)
+  "returns a list of ranges in the form (start len)."
+  (loop with i = start
+	while (< i (+ start len))
+	collect
+	(let ((mapped-range (find-if (lambda (element)
+				       (<= (second element)
+					   i
+					   (+ (third element)
+					      (second element) -1)))
+					     map)))
+	     (if mapped-range
+		 (let* ((dst (first mapped-range))
+			(src (second mapped-range))
+			(mapped-len (third mapped-range))
+			(range (list (+ dst (- i src))
+				     (min (- (+ start len) i)
+					  (- (+ src mapped-len) i)))))
+		   (incf i (second range))
+		   range)
+		  
+		 (let* ((max-end (+ start len))
+			(min-end (second (find-if (lambda (element)
+						    (< i (second element)))
+						  (sort map #'< :key #'second))))
+			(range (list i (- (min max-end
+					       (or min-end max-end)) i))))
+		   (incf i (second range))
+		   range)))))
+
+(defun locations<-seed-ranges (ranges maps)
+  "recursively applies map to `ranges' and produces more ranges, until the
+locations are found after the last map."
+  (if maps
+      (locations<-seed-ranges (apply #'append
+				     (loop for range in ranges
+					   collect
+					   (ranges<-seed-range (first range)
+							       (second range)
+							       (first maps))))
+			      (cdr maps))
+      ranges))
+
+;; PART TWO SOLUTION
+(defun part-two-solution (&optional (file "input.txt"))
+  "returns the minimum location after all location ranges are found."
+  (let* ((f (file-reader file))
+	 (maps (mapcar (lambda (m) (sort m #'< :key #'second))
+		       (get-maps (cdr f)))) 
+	 (seeds (seeds f)))
+    (apply #'min
+	   (mapcar #'first ; get start out of (start len)
+		   (apply #'append
+			  (loop for (start len) on seeds by #'cddr
+				collect
+				(locations<-seed-ranges (list (list start len))
+							maps)))))))
