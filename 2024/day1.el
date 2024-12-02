@@ -54,9 +54,6 @@ containing all elements of column 1 and column 2 respectively."
   (* num
      (length (seq-filter (lambda (n) (= num n)) right-list))))
 
-(setf *list1* (list 3 4 2 1 3 3)
-      *list2* (list 4 3 5 3 9 3))
-
 (defun main2 ()
   (set-lists)
   (apply '+ (mapcar (lambda (n) (similarity-score n *list2*)) *list1*)))
